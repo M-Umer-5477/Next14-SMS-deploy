@@ -196,7 +196,7 @@ const GenerateSessionTimetable = () => {
     };
 
     fetchCourses();
-  }, []);
+  },[session , router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -34,7 +34,7 @@ const InsertWeeklyTimetable = () => {
     };
 
     fetchCourses();
-  }, []);
+  },[session , router]);
 
   const handleInputChange = (day, index, field, value) => {
     const newEntries = { ...entries };

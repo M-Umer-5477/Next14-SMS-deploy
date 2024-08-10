@@ -25,7 +25,7 @@ const Login = () => {
                 router.push('/dashboard');
             }
         }
-    }, [session, router]);
+    }, [session, router, status]);
 
     if (session) {
         if(session.user.email.includes( '@teacher.com')){
