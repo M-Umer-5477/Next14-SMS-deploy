@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -26,7 +26,7 @@ const Signup = () => {
                 router.push('/dashboard');
             }
         }
-    }, [session, router]);
+    }, [session, status, router]);
 
     const handleChange = (e) => {
         const { id, value } = e.target;

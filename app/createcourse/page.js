@@ -12,7 +12,7 @@ const AddCourse = () => {
     if (!session || session.user?.email.includes('@teacher.com') || session.user?.email.includes('@student.com')) {
         router.push("/login");
     }
-}, [session, router]);
+}, [session, status, router]);
 
   const [course, setCourse] = useState({
     CourseID: '',

@@ -242,7 +242,7 @@ const AddEnrollment = ({ params }) => {
         };
 
         initialize();
-    }, [params.id, fetchCourse, fetchStudents, session, router]);
+    }, [params.id, fetchCourse, fetchStudents, session, status, router]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;

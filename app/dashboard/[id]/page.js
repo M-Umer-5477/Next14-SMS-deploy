@@ -354,6 +354,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 
 const CoursePage = ({ params }) => {
     const [course, setCourse] = useState({});
@@ -377,7 +378,7 @@ const CoursePage = ({ params }) => {
         }
 
         fetchCourse();
-    }, [params.id],session, router);
+    }, [params.id, status, session, router]);
 
     const handleDelete = async () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this course?");
@@ -397,7 +398,7 @@ const CoursePage = ({ params }) => {
         <div className="min-h-screen bg-gray-100 py-6 px-6 sm:px-8 lg:px-10 flex flex-col items-center">
             <div className="bg-white shadow-md rounded-lg overflow-hidden w-full max-w-6xl">
                 <div className="relative">
-                    <img
+                    <Image 
                         src="/course.jpeg"
                         alt="Course Banner"
                         className="w-full h-64 object-cover"

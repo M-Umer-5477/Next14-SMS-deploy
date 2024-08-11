@@ -45,7 +45,7 @@ const EditCourse = ({ params }) => {
     };
 
     fetchCourse();
-  }, [params.id, session, router]);
+  }, [params.id, session, status, router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

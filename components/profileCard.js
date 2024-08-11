@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import React, { useState } from 'react';
 
 const ProfileCard = ({ user }) => {
@@ -15,7 +16,7 @@ const ProfileCard = ({ user }) => {
         <div className="relative bg-white shadow-lg rounded-lg p-4 max-w-sm mx-auto">
             {/* Profile Header */}
             <div className="flex items-center space-x-4">
-                <img
+                <Image
                     src={user.profilePicture || ''}
                     alt="Profile Picture"
                     className="w-16 h-16 rounded-full border-2 border-gray-200"

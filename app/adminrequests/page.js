@@ -122,12 +122,21 @@ const AdminRequests = () => {
     const { data: session, status } = useSession(); 
 
     useEffect(() => {
-        
+        const fetchCurrentRole = async () => {
+            try {
+                const res = await fetch(`http://localhost:3000/api/signup/fetchRole?email=${session.user.email}`);
+                const data = await res.json();
+                setCurrentRole(data.role); // Assuming data contains a field 'role'
+            } catch (error) {
+                console.error('Failed to fetch role', error);
+                setError('Failed to fetch role.');
+            }
+        };
         if (status === 'loading') return;   
         if (session?.user) {
             fetchCurrentRole();
         }
-    }, [session]);
+    }, [session, status ]);
 
     const fetchCurrentRole = async () => {
         try {

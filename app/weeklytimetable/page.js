@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 const InsertWeeklyTimetable = () => {
   const [courseID, setCourseID] = useState('');
   const [courses, setCourses] = useState([]);
@@ -34,7 +35,7 @@ const InsertWeeklyTimetable = () => {
     };
 
     fetchCourses();
-  },[session , router]);
+  },[session , status, router]);
 
   const handleInputChange = (day, index, field, value) => {
     const newEntries = { ...entries };
@@ -155,7 +156,7 @@ const InsertWeeklyTimetable = () => {
                     <option value="104">104</option>
                   </select>
                 </div>
-                {entries[day].length > 1 && (
+                {entries[day].length > 0 && (
                   <button
                     type="button"
                     onClick={() => handleRemoveSlot(day, index)}
@@ -183,6 +184,8 @@ const InsertWeeklyTimetable = () => {
           >
             {loading ? 'Submitting...' : 'Insert Weekly Timetable'}
           </button>
+          <Link href='/timetable' className="inline-flex ml-6 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Generate Session Classes</Link>
+
         </div>
       </form>
     </div>

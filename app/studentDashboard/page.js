@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import ProfileCard from '@/components/profileCard';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const StudentDashboard = () => {
@@ -37,7 +38,7 @@ const StudentDashboard = () => {
             };
             fetchStudentData();
         }
-    }, [session]);
+    }, [session, status, router]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -53,7 +54,7 @@ const StudentDashboard = () => {
          key={course.CourseID}
          className="border p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100"
        >
-         <img src="course.jpeg" alt={course.CourseName} className="w-full h-32 object-cover rounded-t-lg" />
+         <Image src="course.jpeg" alt={course.CourseName} className="w-full h-32 object-cover rounded-t-lg" />
          <div className="p-4">
            <div className="text-sm text-gray-600 mb-1">{course.Department}</div>
            <Link href={`/studentDashboard/${course._id}`} className="font-bold text-lg mb-2">{course.CourseName}</Link>

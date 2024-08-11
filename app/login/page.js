@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import { useState ,useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -26,19 +26,6 @@ const Login = () => {
             }
         }
     }, [session, router, status]);
-
-    if (session) {
-        if(session.user.email.includes( '@teacher.com')){
-            router.push('/teacherDashboard');
-        }
-        else if(session.user.email.includes( '@student.com')){
-            router.push('/studentDashboard');
-        }
-        else{
-            router.push('/dashboard');
-        }
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -109,8 +96,8 @@ const Login = () => {
                     </button>
                 </form>
                 <p className="mt-4 text-center text-gray-600">
-                    Don't have an account? <Link href="/signup" className="text-blue-500 hover:underline">Sign up here</Link>
-                </p>
+    Don&apos;t have an account? <Link href="/signup" className="text-blue-500 hover:underline">Sign up here</Link>
+</p>
             </div>
         </div>
     );

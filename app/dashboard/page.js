@@ -163,6 +163,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const Dashboard = () => {
   const [courses, setCourses] = useState([]);
@@ -179,7 +180,7 @@ const Dashboard = () => {
     } else {
       fetchCourses(currentPage, searchQuery);
     }
-  }, [session, currentPage, searchQuery]);
+  }, [session, status, router, currentPage, searchQuery]);
 
   const fetchCourses = async (page, query) => {
     try {
@@ -231,7 +232,7 @@ const Dashboard = () => {
                   key={course._id}
                   className="border p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100"
                 >
-                  <img src="course.jpeg" alt={course.CourseName} className="w-full h-32 object-cover rounded-t-lg" />
+                  <Image src="course.jpeg" alt={course.CourseName} className="w-full h-32 object-cover rounded-t-lg" />
                   <div className="p-4">
                     <div className="text-sm text-gray-600 mb-1">{course.Department}</div>
                     <Link href={`/dashboard/${course._id}`} className="font-bold text-lg mb-2">{course.CourseName}</Link>
