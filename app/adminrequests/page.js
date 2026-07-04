@@ -11,7 +11,7 @@ const AdminRequests = () => {
     }
     const fetchCurrentRole = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/signup/fetchRole?email=${session.user.email}`);
+            const res = await fetch(`/api/signup/fetchRole?email=${session.user.email}`);
             const data = await res.json();
             setCurrrentRole(data);
 
@@ -24,7 +24,7 @@ const AdminRequests = () => {
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const res = await fetch(`http://localhost:3000/api/adminrequest`);
+                const res = await fetch(`/api/adminrequest`);
                 const data = await res.json();
                 setRequests(data);
             } catch (error) {
@@ -34,7 +34,7 @@ const AdminRequests = () => {
         };
         const fetchCurrentRole = async () => {
             try {
-                const res = await fetch(`http://localhost:3000/api/signup?email=${session.user.email}`);
+                const res = await fetch(`/api/signup?email=${session.user.email}`);
                 const data = await res.json();
                 setCurrrentRole(data);
             } catch (error) {
@@ -50,7 +50,7 @@ const AdminRequests = () => {
 
     const handleApprove = async (email) => {
         try {
-            await fetch('http://localhost:3000/api/signup', {
+            await fetch('/api/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -66,7 +66,7 @@ const AdminRequests = () => {
 
     const handleDelete = async (email) => {
         try {
-            await fetch(`http://localhost:3000/api/adminrequest/deletereq?email=${email}`, {
+            await fetch(`/api/adminrequest/deletereq?email=${email}`, {
                 method: 'DELETE',
             });
             setRequests((prevRequests) => prevRequests.filter(request => request.email !== email));
@@ -124,7 +124,7 @@ const AdminRequests = () => {
     useEffect(() => {
         const fetchCurrentRole = async () => {
             try {
-                const res = await fetch(`http://localhost:3000/api/signup/fetchRole?email=${session.user.email}`);
+                const res = await fetch(`/api/signup/fetchRole?email=${session.user.email}`);
                 const data = await res.json();
                 setCurrentRole(data.role); // Assuming data contains a field 'role'
             } catch (error) {
@@ -140,7 +140,7 @@ const AdminRequests = () => {
 
     const fetchCurrentRole = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/signup/fetchRole?email=${session.user.email}`);
+            const res = await fetch(`/api/signup/fetchRole?email=${session.user.email}`);
             const data = await res.json();
             setCurrentRole(data.role); // Assuming data contains a field 'role'
         } catch (error) {
@@ -157,7 +157,7 @@ const AdminRequests = () => {
 
     const fetchRequests = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/adminrequest`);
+            const res = await fetch(`/api/adminrequest`);
             const data = await res.json();
             setRequests(data);
         } catch (error) {
@@ -168,7 +168,7 @@ const AdminRequests = () => {
 
     const handleApprove = async (email) => {
         try {
-            await fetch('http://localhost:3000/api/signup', {
+            await fetch('/api/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -184,7 +184,7 @@ const AdminRequests = () => {
 
     const handleDelete = async (email) => {
         try {
-            await fetch(`http://localhost:3000/api/adminrequest/deletereq?email=${email}`, {
+            await fetch(`/api/adminrequest/deletereq?email=${email}`, {
                 method: 'DELETE',
             });
             setRequests((prevRequests) => prevRequests.filter(request => request.email !== email));

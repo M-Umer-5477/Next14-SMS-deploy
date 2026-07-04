@@ -23,7 +23,7 @@ const StudentDashboard = () => {
         else{
             const fetchStudentData = async () => {
                 try {
-                    const response = await fetch(`http://localhost:3000/api/studentdata?email=${session.user.email}`);
+                    const response = await fetch(`/api/studentdata?email=${session.user.email}`);
                     if (!response.ok) {
                         throw new Error('Failed to fetch teacher data');
                     }

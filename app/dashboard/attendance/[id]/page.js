@@ -23,7 +23,7 @@ const Attendance = ({ params }) => {
           }
         const fetchCourseAndTimetable = async () => {
             try {
-                const resCourse = await fetch(`http://localhost:3000/api/createcourse/${params.id}`, { cache: 'no-store' });
+                const resCourse = await fetch(`/api/createcourse/${params.id}`, { cache: 'no-store' });
                 const courseData = await resCourse.json();
                 setCourse(courseData.data);
 
@@ -57,7 +57,7 @@ const Attendance = ({ params }) => {
 
     const fetchEnrolledStudents = async (courseID) => {
         try {
-            const res = await fetch(`http://localhost:3000/api/enrollment?courseId=${courseID}`);
+            const res = await fetch(`/api/enrollment?courseId=${courseID}`);
             const data = await res.json();
             setStudents(data);
         } catch (error) {
@@ -68,7 +68,7 @@ const Attendance = ({ params }) => {
 
     const fetchTimetable = async (courseID) => {
         try {
-            const res = await fetch(`http://localhost:3000/api/get-session-timetable?courseId=${courseID}`);
+            const res = await fetch(`/api/get-session-timetable?courseId=${courseID}`);
             const data = await res.json();
             if (data.error) {
                 console.error('Error fetching timetable:', data.error);
@@ -118,7 +118,7 @@ const Attendance = ({ params }) => {
 
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:3000/api/attendance', {
+            const response = await fetch('/api/attendance', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

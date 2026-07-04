@@ -83,7 +83,7 @@ export default function AddTeacher() {
     const password = generatePassword(formData.FirstName, formData.TeacherID);
 
     try {
-      const response = await fetch('http://localhost:3000/api/addteacher', {
+      const response = await fetch('/api/addteacher', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

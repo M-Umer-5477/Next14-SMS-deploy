@@ -47,7 +47,7 @@ const AddStudent = () => {
 
     try {
       const { email, password } = generateLoginCredentials();
-      const response = await fetch('http://localhost:3000/api/addstudent', {
+      const response = await fetch('/api/addstudent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

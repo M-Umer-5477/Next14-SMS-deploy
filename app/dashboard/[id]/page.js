@@ -13,7 +13,7 @@ const page = (ctx) => {
     }   
     useEffect(() => {
         async function fetchCourse() {
-            const res = await fetch(`http://localhost:3000/api/createcourse/${ctx.params.id}`, { cache: 'no-store' })
+            const res = await fetch(`/api/createcourse/${ctx.params.id}`, { cache: 'no-store' })
             console.log(res)
             const course = await res.json()
             console.log("response is " + course)
@@ -27,7 +27,7 @@ const page = (ctx) => {
         if (!confirmDelete) return;
         try {
           // Mocking a delete API call
-          await fetch(`http://localhost:3000/api/createcourse/${ctx.params.id}`, { method: 'DELETE' });
+          await fetch(`/api/createcourse/${ctx.params.id}`, { method: 'DELETE' });
           // Redirect to home page or any other page after deletion
           router.push('/dashboard');
         } catch (error) {
@@ -166,7 +166,7 @@ const CoursePage = (ctx) => {
     useEffect(() => {
         async function fetchCourse() {
             try {
-                const res = await fetch(`http://localhost:3000/api/createcourse/${ctx.params.id}`, { cache: 'no-store' });
+                const res = await fetch(`/api/createcourse/${ctx.params.id}`, { cache: 'no-store' });
                 const courseData = await res.json();
                 setCourse(courseData.data);
             } catch (error) {
@@ -266,7 +266,7 @@ const CoursePage = (ctx) => {
     useEffect(() => {
         async function fetchCourse() {
             try {
-                const res = await fetch(`http://localhost:3000/api/createcourse/${ctx.params.id}`, { cache: 'no-store' });
+                const res = await fetch(`/api/createcourse/${ctx.params.id}`, { cache: 'no-store' });
                 const courseData = await res.json();
                 setCourse(courseData.data);
             } catch (error) {
@@ -282,7 +282,7 @@ const CoursePage = (ctx) => {
         if (!confirmDelete) return;
 
         try {
-            await fetch(`http://localhost:3000/api/createcourse/${ctx.params.id}`, { method: 'DELETE' });
+            await fetch(`/api/createcourse/${ctx.params.id}`, { method: 'DELETE' });
             router.push('/dashboard');
         } catch (error) {
             console.error('Error deleting course:', error);
@@ -369,7 +369,7 @@ const CoursePage = ({ params }) => {
           }
         async function fetchCourse() {
             try {
-                const res = await fetch(`http://localhost:3000/api/createcourse/${params.id}`, { cache: 'no-store' });
+                const res = await fetch(`/api/createcourse/${params.id}`, { cache: 'no-store' });
                 const courseData = await res.json();
                 setCourse(courseData.data);
             } catch (error) {
@@ -385,7 +385,7 @@ const CoursePage = ({ params }) => {
         if (!confirmDelete) return;
 
         try {
-            await fetch(`http://localhost:3000/api/createcourse/${params.id}`, { method: 'DELETE' });
+            await fetch(`/api/createcourse/${params.id}`, { method: 'DELETE' });
             router.push('/dashboard');
         } catch (error) {
             console.error('Error deleting course:', error);

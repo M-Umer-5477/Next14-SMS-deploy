@@ -7,7 +7,7 @@ const GenerateTimetableButton = () => {
     const handleClick = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:3000/api/generate-session-timetable', {
+        const response = await fetch('/api/generate-session-timetable', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ sessionStartDate: '2024-01-01', sessionEndDate: '2024-12-31' })

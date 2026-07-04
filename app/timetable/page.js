@@ -24,7 +24,7 @@ const AdminTimetable = () => {
         // Fetch all courses
         const fetchCourses = async () => {
             try {
-                const res = await fetch('http://localhost:3000/api/fetchcourses');
+                const res = await fetch('/api/fetchcourses');
                 const data = await res.json();
                 setCourses(data);
             } catch (error) {
@@ -46,7 +46,7 @@ const AdminTimetable = () => {
         setSubmitting(true); // Set submitting to true when the form starts submitting
 
         try {
-            const res = await fetch('http://localhost:3000/api/timetable', {
+            const res = await fetch('/api/timetable', {
                 method: 'POST',
                 body: JSON.stringify({ CourseID: courseID, Day: day, StartTime: startTime, EndTime: endTime, Room: room }),
                 headers: {
@@ -186,7 +186,7 @@ const GenerateSessionTimetable = () => {
     }
     const fetchCourses = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/fetchcourses');
+        const res = await fetch('/api/fetchcourses');
         const data = await res.json();
         setCourses(data);
       } catch (error) {
@@ -210,7 +210,7 @@ const GenerateSessionTimetable = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:3000/api/generate-session-timetable', {
+      const res = await fetch('/api/generate-session-timetable', {
         method: 'POST',
         body: JSON.stringify({
           CourseID: courseID,

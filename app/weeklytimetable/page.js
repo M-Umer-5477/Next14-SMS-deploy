@@ -25,7 +25,7 @@ const InsertWeeklyTimetable = () => {
     // Fetch courses from the backend
     const fetchCourses = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/fetchcourses');
+        const response = await fetch('/api/fetchcourses');
         const data = await response.json();
         setCourses(data);
       } catch (error) {
@@ -73,7 +73,7 @@ const InsertWeeklyTimetable = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/insert-weekly-timetable', {
+      const response = await fetch('/api/insert-weekly-timetable', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

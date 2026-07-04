@@ -42,7 +42,7 @@ const Signup = () => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:3000/api/adminrequest', {
+            const response = await fetch('/api/adminrequest', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

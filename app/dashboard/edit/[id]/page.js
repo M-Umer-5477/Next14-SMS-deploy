@@ -25,7 +25,7 @@ const EditCourse = ({ params }) => {
 
     const fetchCourse = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/createcourse/${params.id}`, { cache: 'no-store' });
+        const res = await fetch(`/api/createcourse/${params.id}`, { cache: 'no-store' });
         const { success, data, error } = await res.json();
 
         if (!res.ok || !success) {
@@ -58,7 +58,7 @@ const EditCourse = ({ params }) => {
     setError('');
 
     try {
-      const res = await fetch(`http://localhost:3000/api/createcourse/${params.id}`, {
+      const res = await fetch(`/api/createcourse/${params.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

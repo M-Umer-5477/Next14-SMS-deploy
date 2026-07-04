@@ -32,8 +32,8 @@ const AssignTeacher = ({ params }) => {
         const fetchCourseAndTeachers = async () => {
             try {
                 const [courseRes, teachersRes] = await Promise.all([
-                    fetch(`http://localhost:3000/api/createcourse/${params.id}`),
-                    fetch('http://localhost:3000/api/addteacher')
+                    fetch(`/api/createcourse/${params.id}`),
+                    fetch('/api/addteacher')
                 ]);
 
                 if (!courseRes.ok) throw new Error('Failed to fetch course');
@@ -62,7 +62,7 @@ const AssignTeacher = ({ params }) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:3000/api/assignTeacher', {
+            const res = await fetch('/api/assignTeacher', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

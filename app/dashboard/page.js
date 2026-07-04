@@ -16,7 +16,7 @@ const Dashboard = () => {
     }
     const fetchCourses = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/createcourse', {
+        const response = await fetch('/api/createcourse', {
             method: 'GET'
           });
         if (response.ok) {
@@ -88,7 +88,7 @@ const Dashboard = () => {
 
   const fetchCourses = async (page) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/createcourse?page=${page}&limit=4`, {
+      const response = await fetch(`/api/createcourse?page=${page}&limit=4`, {
         method: 'GET'
       });
       if (response.ok) {
@@ -184,7 +184,7 @@ const Dashboard = () => {
 
   const fetchCourses = async (page, query) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/createcourse?page=${page}&limit=6&query=${query}`, {
+      const response = await fetch(`/api/createcourse?page=${page}&limit=6&query=${query}`, {
         method: 'GET'
       });
       if (response.ok) {

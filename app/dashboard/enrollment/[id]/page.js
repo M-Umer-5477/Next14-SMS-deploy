@@ -22,7 +22,7 @@ const AddEnrollment = (ctx) => {
 
     const fetchCourse = useCallback(async (courseId) => {
         try {
-            const courseRes = await fetch(`http://localhost:3000/api/createcourse/${courseId}`);
+            const courseRes = await fetch(`/api/createcourse/${courseId}`);
             if (!courseRes.ok) throw new Error('Failed to fetch course');
             const courseData = await courseRes.json();
             return courseData.data;
@@ -33,7 +33,7 @@ const AddEnrollment = (ctx) => {
 
     const fetchStudents = useCallback(async () => {
         try {
-            const studentsRes = await fetch('http://localhost:3000/api/addstudent');
+            const studentsRes = await fetch('/api/addstudent');
             if (!studentsRes.ok) throw new Error('Failed to fetch students');
             const studentsData = await studentsRes.json();
             return studentsData.data;
@@ -75,7 +75,7 @@ const AddEnrollment = (ctx) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:3000/api/enrollment', {
+            const res = await fetch('/api/enrollment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(enrollment),
@@ -195,7 +195,7 @@ const AddEnrollment = ({ params }) => {
 
     const fetchCourse = useCallback(async (courseId) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/createcourse/${courseId}`);
+            const response = await fetch(`/api/createcourse/${courseId}`);
             if (!response.ok) throw new Error('Failed to fetch course');
             const data = await response.json();
             return data.data;
@@ -207,7 +207,7 @@ const AddEnrollment = ({ params }) => {
 
     const fetchStudents = useCallback(async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/addstudent');
+            const response = await fetch('/api/addstudent');
             if (!response.ok) throw new Error('Failed to fetch students');
             const data = await response.json();
             return data.data;
@@ -255,7 +255,7 @@ const AddEnrollment = ({ params }) => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:3000/api/enrollment', {
+            const response = await fetch('/api/enrollment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(enrollment),

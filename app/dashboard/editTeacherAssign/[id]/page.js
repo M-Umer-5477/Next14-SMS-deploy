@@ -21,15 +21,15 @@ const ChangeTeacherAssignment = ({ params }) => {
     } else {
       async function fetchData() {
         try {
-          const courseRes = await fetch(`http://localhost:3000/api/createcourse/${params.id}`, { cache: 'no-store' });
+          const courseRes = await fetch(`/api/createcourse/${params.id}`, { cache: 'no-store' });
           const courseData = await courseRes.json();
           setCourse(courseData.data);
 
-          const assignmentRes = await fetch(`http://localhost:3000/api/assignTeacher?courseId=${courseData.data.CourseID}`);
+          const assignmentRes = await fetch(`/api/assignTeacher?courseId=${courseData.data.CourseID}`);
           const assignmentData = await assignmentRes.json();
           setAssignment(assignmentData.assignment);
 
-          const teachersRes = await fetch('http://localhost:3000/api/addteacher');
+          const teachersRes = await fetch('/api/addteacher');
           const teachersData = await teachersRes.json();
           setTeachers(teachersData.data);
         } catch (error) {
@@ -49,7 +49,7 @@ const ChangeTeacherAssignment = ({ params }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const deleteRes = await fetch(`http://localhost:3000/api/assignTeacher?courseId=${assignment.CourseID}`, {
+      const deleteRes = await fetch(`/api/assignTeacher?courseId=${assignment.CourseID}`, {
         method: 'DELETE'
       });
       const deleteResult = await deleteRes.json();
@@ -59,7 +59,7 @@ const ChangeTeacherAssignment = ({ params }) => {
         return;
       }
 
-      const res = await fetch('http://localhost:3000/api/assignTeacher', {
+      const res = await fetch('/api/assignTeacher', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -24,7 +24,7 @@ const StudentCoursePage = ({ params }) => {
     useEffect(() => {
         async function fetchCourse() {
             try {
-                const res = await fetch(`http://localhost:3000/api/createcourse/${params.id}`, { cache: 'no-store' });
+                const res = await fetch(`/api/createcourse/${params.id}`, { cache: 'no-store' });
                 const courseData = await res.json();
                 setCourse(courseData.data);
             } catch (error) {
@@ -37,7 +37,7 @@ const StudentCoursePage = ({ params }) => {
 
     async function fetchAttendance() {
         try {
-            const res = await fetch(`http://localhost:3000/api/attendance/getAttendance?courseId=${course.CourseID}&studentemail=${session.user.email}`, { cache: 'no-store' });
+            const res = await fetch(`/api/attendance/getAttendance?courseId=${course.CourseID}&studentemail=${session.user.email}`, { cache: 'no-store' });
             const data = await res.json();
             setAttendanceRecords(data);
         } catch (error) {
