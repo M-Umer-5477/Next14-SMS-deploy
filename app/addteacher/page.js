@@ -200,7 +200,7 @@ export default function AddTeacher() {
           <button
             type="submit"
             disabled={loading} // Disable button when loading
-            className={`w-full py-2 px-4 ${loading ? 'bg-gray-500' : 'bg-indigo-600'} text-white font-semibold rounded-md shadow-sm hover:${loading ? 'bg-gray-500' : 'bg-indigo-700'} focus:outline-none focus:ring-2 focus:ring-indigo-500`}
+            className={`w-full py-2 px-4 font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
           >
             {loading ? 'Adding Teacher...' : 'Add Teacher'}
           </button>

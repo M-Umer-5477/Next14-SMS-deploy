@@ -3,7 +3,7 @@ import Assignment from '@/models/assignmentmodel';
 import Teacher from '@/models/teachermodel';
 export async function DELETE(req,ctx) {
     await db.connect()
-    const { id } = ctx.params.id;
+    const id = ctx.params.id;
 console.log(id,ctx.params.id);
    
 

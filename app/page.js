@@ -1,13 +1,13 @@
 import React from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+
 const page = () => {
   return (
     <div className=" ">
       
       <div className="mb-6 relative">
         {/* Add your banner component here */}
-        <Image src="banner.jpg" alt="Banner" className="w-full  h-96" />
+        <img src="/banner.jpg" alt="Banner" className="w-full h-96 object-cover" />
       </div>
 
       {/* Welcome Message */}

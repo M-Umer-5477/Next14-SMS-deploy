@@ -1,55 +1,10 @@
-/*import NextAuth from "next-auth";
-import CredentialsProvider from 'next-auth/providers/credentials'
-import User from "@/models/usermodel";
-import bcrypt from 'bcrypt'
-import db from "@/lib/db";
 
-const handler = NextAuth({
-    providers: [
-        CredentialsProvider({
-            type: 'credentials',
-            credentials: {
-                email: {label: 'Email', type: 'text', placeholder: 'Kobe Bryant'},
-                password: {label: 'Password', type: 'password'}
-            },
-            async authorize(credentials, req){
-                const {email, password} = credentials
-                await db.connect()
-                
-                                
-                const user = await User.findOne({ email })
-
-                if(!user){
-                    throw new Error("Invalid input")
-                }
-
-             
-                
-                const comparePass = await bcrypt.compare(password, user.password)
-
-                if(!comparePass){
-                    throw new Error("Invalid input")
-                } else {
-                    const {password, ...currentUser} = user._doc
-                    return {
-                        ...currentUser,
-                    }
-                }
-            }
-        })
-    ],
-    pages: {
-        signIn: '/login'
-    }
-})
-
-export {handler as GET, handler as POST}*/
 import NextAuth from "next-auth";
 import CredentialsProvider from 'next-auth/providers/credentials';
 import User from "@/models/usermodel";
 import Teacher from "@/models/teachermodel";  // Import the Teacher model
 import Student from "@/models/studentmodel";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import db from "@/lib/db";
 
 const handler = NextAuth({
@@ -77,7 +32,8 @@ const handler = NextAuth({
                     if (!comparePass) {
                         throw new Error("Invalid username or password");
                     }
-                    return { ...user._doc };
+                    const { password: _, ...teacherData } = user._doc;
+                    return { ...teacherData };
                 } else if (email.includes('@student.com')) {
                     // Handle teacher login
                     user = await Student.findOne({ email });
@@ -89,7 +45,8 @@ const handler = NextAuth({
                     if (!comparePass) {
                         throw new Error("Invalid username or password");
                     }
-                    return { ...user._doc };
+                    const { password: _, ...studentData } = user._doc;
+                    return { ...studentData };
                 }
                 else {
                     // Handle admin login
@@ -112,6 +69,18 @@ const handler = NextAuth({
     ],
     pages: {
         signIn: '/login'
+    },
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.user = user;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            session.user = token.user;
+            return session;
+        }
     }
 });
 

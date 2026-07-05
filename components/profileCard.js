@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+
 import React, { useState } from 'react';
 
 const ProfileCard = ({ user }) => {
@@ -16,11 +16,17 @@ const ProfileCard = ({ user }) => {
         <div className="relative bg-white shadow-lg rounded-lg p-4 max-w-sm mx-auto">
             {/* Profile Header */}
             <div className="flex items-center space-x-4">
-                <Image
-                    src={user.profilePicture || ''}
-                    alt="Profile Picture"
-                    className="w-16 h-16 rounded-full border-2 border-gray-200"
-                />
+                {user.ProfilePicture ? (
+                    <img
+                        src={user.ProfilePicture}
+                        alt="Profile Picture"
+                        className="w-16 h-16 rounded-full border-2 border-gray-200"
+                    />
+                ) : (
+                    <div className="w-16 h-16 rounded-full border-2 border-gray-200 bg-indigo-100 flex items-center justify-center">
+                        <span className="text-indigo-600 font-bold text-xl">{user.FirstName?.[0]}{user.LastName?.[0]}</span>
+                    </div>
+                )}
                 <div>
                     <h2 className="text-xl font-semibold text-gray-800">{`${user.FirstName} ${user.LastName}`}</h2>
                     <p className="text-gray-600">{user.email}</p>

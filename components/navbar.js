@@ -78,12 +78,12 @@ const Navbarr = () => {
                             {session?.user && session.user.email.includes('@teacher.com') && (
                                 <>
                                     <li>
-                                        <Link href='/teachercourses' className='hover:bg-orange-700 p-2 rounded-md transition-all duration-300'>
+                                        <Link href='/teacherDashboard' className='hover:bg-orange-700 p-2 rounded-md transition-all duration-300'>
                                             <span className='text-orange-300 text-lg sm:text-xl font-bold hover:text-white'>My Courses</span>
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link href='/markattendance' className='hover:bg-orange-700 p-2 rounded-md transition-all duration-300'>
+                                        <Link href='/teacherDashboard' className='hover:bg-orange-700 p-2 rounded-md transition-all duration-300'>
                                             <span className='text-orange-300 text-lg sm:text-xl font-bold hover:text-white'>Mark Attendance</span>
                                         </Link>
                                     </li>
@@ -92,12 +92,12 @@ const Navbarr = () => {
                             {session?.user && session.user.email.includes('@student.com') && (
                                 <>
                                     <li>
-                                        <Link href='/mycourses' className='hover:bg-orange-700 p-2 rounded-md transition-all duration-300'>
+                                        <Link href='/studentDashboard' className='hover:bg-orange-700 p-2 rounded-md transition-all duration-300'>
                                             <span className='text-orange-300 text-lg sm:text-xl font-bold hover:text-white'>My Courses</span>
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link href='/myattendance' className='hover:bg-orange-700 p-2 rounded-md transition-all duration-300'>
+                                        <Link href='/studentDashboard' className='hover:bg-orange-700 p-2 rounded-md transition-all duration-300'>
                                             <span className='text-orange-300 text-lg sm:text-xl font-bold hover:text-white'>My Attendance</span>
                                         </Link>
                                     </li>

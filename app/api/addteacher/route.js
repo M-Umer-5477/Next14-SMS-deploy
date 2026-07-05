@@ -1,6 +1,6 @@
 import db from '@/lib/db';
 import Teacher from '@/models/teachermodel';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request) {
   await db.connect();

@@ -1,7 +1,7 @@
 import db from '@/lib/db';
 import Request from '@/models/requestmodel';
 import User from '@/models/usermodel';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 export async function POST(request) {
     await db.connect();
 
@@ -42,10 +42,11 @@ export async function POST(request) {
             console.log("Request already exists");
             return new Response(JSON.stringify({ error: 'Request already exists' }), { status: 400 });
         }
+        const hashedPassword = await bcrypt.hash(pass, 10);
         const newRequest = new Request({
             name: username,
             email,
-            password:pass,
+            password: hashedPassword,
             Role:'Admin'
         });
 
@@ -69,10 +70,10 @@ export async function GET(req, res) {
     try {
        
 
-        const res = await Request.find();
+        const requests = await Request.find();
         
 
-        return new Response(JSON.stringify(res), { status: 200 });
+        return new Response(JSON.stringify(requests), { status: 200 });
     } catch (error) {
         console.error('Error fetching:', error);
         return new Response(JSON.stringify({ error: 'Server error' }), { status: 500 });

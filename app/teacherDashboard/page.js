@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import ProfileCard from '@/components/profileCard';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
+
 
 const TeacherDashboard = () => {
     const { data: session, status } = useSession();
@@ -55,7 +55,7 @@ const TeacherDashboard = () => {
             key={course.CourseID}
             className="border p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100"
           >
-            <Image src="course.jpeg" alt={course.CourseName} className="w-full h-32 object-cover rounded-t-lg" />
+            <img src="/course.jpeg" alt={course.CourseName} className="w-full h-32 object-cover rounded-t-lg" />
             <div className="p-4">
               <div className="text-sm text-gray-600 mb-1">{course.Department}</div>
               <Link href={`/dashboard/${course._id}`} className="font-bold text-lg mb-2">{course.CourseName}</Link>

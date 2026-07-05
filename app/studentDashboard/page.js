@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import ProfileCard from '@/components/profileCard';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 
 const StudentDashboard = () => {
@@ -25,7 +24,7 @@ const StudentDashboard = () => {
                 try {
                     const response = await fetch(`/api/studentdata?email=${session.user.email}`);
                     if (!response.ok) {
-                        throw new Error('Failed to fetch teacher data');
+                        throw new Error('Failed to fetch student data');
                     }
                     const data = await response.json();
                     setStudentData(data.student);
@@ -54,7 +53,7 @@ const StudentDashboard = () => {
          key={course.CourseID}
          className="border p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100"
        >
-         <Image src="course.jpeg" alt={course.CourseName} className="w-full h-32 object-cover rounded-t-lg" />
+         <img src="/course.jpeg" alt={course.CourseName} className="w-full h-32 object-cover rounded-t-lg" />
          <div className="p-4">
            <div className="text-sm text-gray-600 mb-1">{course.Department}</div>
            <Link href={`/studentDashboard/${course._id}`} className="font-bold text-lg mb-2">{course.CourseName}</Link>

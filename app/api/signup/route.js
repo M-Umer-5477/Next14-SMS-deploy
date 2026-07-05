@@ -1,5 +1,5 @@
 import db from '@/lib/db';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import User from '@/models/usermodel';
 import Request from '@/models/requestmodel'; // Assuming there's a Request model for admin requests
 
