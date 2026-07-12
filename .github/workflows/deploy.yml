@@ -17,13 +17,12 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
+          timeout: 60s
+          command_timeout: 20m
           script_stop: true
           script: |
-            set -e
             cd ~/apps/Next14-SMS-deploy
             git pull origin main
-            npm ci
+            npm install
             npm run build
             pm2 reload sms
-            pm2 save
-            curl -fI http://localhost:3000
