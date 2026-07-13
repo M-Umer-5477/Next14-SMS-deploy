@@ -19,10 +19,32 @@ jobs:
           port: 22
           timeout: 60s
           command_timeout: 20m
-          script_stop: true
+
           script: |
+            set -e
+
+            echo "===== Deployment Started ====="
+            date
+
             cd ~/apps/Next14-SMS-deploy
+
+            echo "Pulling latest code..."
             git pull origin main
+
+            echo "Installing dependencies..."
             npm install
+
+            echo "Building Next.js application..."
             npm run build
+
+            echo "Reloading PM2..."
             pm2 reload sms
+
+            echo "Saving PM2 process list..."
+            pm2 save
+
+            echo "Checking application..."
+            curl -I http://localhost:3000
+
+            echo "===== Deployment Finished Successfully ====="
+            date
