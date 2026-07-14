@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { HiOutlineCalendar, HiOutlinePlus, HiOutlineX } from 'react-icons/hi';
+
 const InsertWeeklyTimetable = () => {
   const [courseID, setCourseID] = useState('');
   const [courses, setCourses] = useState([]);
@@ -14,15 +16,16 @@ const InsertWeeklyTimetable = () => {
     Friday: [{ startTime: '08:00', endTime: '09:00', room: '101' }],
   });
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);// State to handle button loading
+  const [messageType, setMessageType] = useState('');
+  const [loading, setLoading] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
+
   useEffect(() => {
     if (status === 'loading') return;
     if (!session || session.user?.email.includes('@teacher.com') || session.user?.email.includes('@student.com')) {
       router.push("/login");
     }
-    // Fetch courses from the backend
     const fetchCourses = async () => {
       try {
         const response = await fetch('/api/fetchcourses');
@@ -31,11 +34,12 @@ const InsertWeeklyTimetable = () => {
       } catch (error) {
         console.error('Error fetching courses:', error);
         setMessage('Failed to fetch courses');
+        setMessageType('error');
       }
     };
 
     fetchCourses();
-  },[session , status, router]);
+  }, [session, status, router]);
 
   const handleInputChange = (day, index, field, value) => {
     const newEntries = { ...entries };
@@ -57,7 +61,8 @@ const InsertWeeklyTimetable = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true on submit
+    setLoading(true);
+    setMessage('');
 
     const data = [];
     for (const [day, slots] of Object.entries(entries)) {
@@ -84,114 +89,113 @@ const InsertWeeklyTimetable = () => {
       const result = await response.json();
       if (response.ok) {
         setMessage('Weekly timetable inserted successfully');
+        setMessageType('success');
       } else {
         setMessage(result.error || 'Failed to insert weekly timetable');
+        setMessageType('error');
       }
     } catch (error) {
       console.error('Error inserting weekly timetable:', error);
       setMessage('Failed to insert weekly timetable');
+      setMessageType('error');
     } finally {
-      setLoading(false); // Set loading to false when done
+      setLoading(false);
     }
   };
 
+  const dayColors = {
+    Monday: 'var(--accent)',
+    Tuesday: 'var(--success)',
+    Wednesday: 'var(--warning)',
+    Thursday: 'var(--info)',
+    Friday: 'hsl(340, 75%, 55%)',
+  };
+
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Insert Weekly Timetable</h1>
-      {message && <div className="mb-4">{message}</div>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Course</label>
-          <select
-            value={courseID}
-            onChange={(e) => setCourseID(e.target.value)}
-            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
-          >
-            <option value="">Select Course</option>
-            {courses.map((course) => (
-              <option key={course._id} value={course.CourseID}>
-                {course.CourseName}
-              </option>
-            ))}
-          </select>
+    <div className="page-container">
+      <div className="container mx-auto px-4 max-w-4xl">
+        <div className="page-header animate-slide-up">
+          <h1 className="page-title">Weekly Timetable</h1>
+          <p className="page-subtitle">Configure the weekly class schedule</p>
         </div>
-        {Object.keys(entries).map((day) => (
-          <div key={day} className="space-y-2">
-            <h2 className="text-xl font-bold">{day}</h2>
-            {entries[day].map((entry, index) => (
-              <div key={index} className="space-y-2">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Start Time</label>
-                  <input
-                    type="time"
-                    value={entry.startTime}
-                    onChange={(e) => handleInputChange(day, index, 'startTime', e.target.value)}
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
+
+        <div className="glass-card p-6 sm:p-8 animate-fade-in">
+          {message && (
+            <div className={`alert ${messageType === 'success' ? 'alert-success' : 'alert-error'} mb-6`}>
+              {message}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="form-label">Course</label>
+              <select value={courseID} onChange={(e) => setCourseID(e.target.value)} className="form-select" required>
+                <option value="">Select Course</option>
+                {courses.map((course) => (
+                  <option key={course._id} value={course.CourseID}>
+                    {course.CourseName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Day Sections */}
+            {Object.keys(entries).map((day) => (
+              <div key={day} className="rounded-xl border border-[var(--border-subtle)] overflow-hidden">
+                <div className="flex items-center gap-3 px-4 py-3 bg-[var(--bg-input)]" style={{ borderLeft: `3px solid ${dayColors[day]}` }}>
+                  <HiOutlineCalendar className="w-4 h-4" style={{ color: dayColors[day] }} />
+                  <h3 className="font-semibold text-sm">{day}</h3>
+                  <span className="text-xs text-[var(--text-tertiary)]">{entries[day].length} slot{entries[day].length !== 1 ? 's' : ''}</span>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">End Time</label>
-                  <input
-                    type="time"
-                    value={entry.endTime}
-                    onChange={(e) => handleInputChange(day, index, 'endTime', e.target.value)}
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Room</label>
-                  <select
-                    value={entry.room}
-                    onChange={(e) => handleInputChange(day, index, 'room', e.target.value)}
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  >
-                    <option value="">Select Room</option>
-                    <option value="101">101</option>
-                    <option value="102">102</option>
-                    <option value="103">103</option>
-                    <option value="104">104</option>
-                  </select>
-                </div>
-                {entries[day].length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveSlot(day, index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    Remove Slot
+                <div className="p-4 space-y-3">
+                  {entries[day].map((entry, index) => (
+                    <div key={index} className="flex items-end gap-3">
+                      <div className="flex-1">
+                        <label className="form-label">Start</label>
+                        <input type="time" value={entry.startTime} onChange={(e) => handleInputChange(day, index, 'startTime', e.target.value)} className="form-input" required />
+                      </div>
+                      <div className="flex-1">
+                        <label className="form-label">End</label>
+                        <input type="time" value={entry.endTime} onChange={(e) => handleInputChange(day, index, 'endTime', e.target.value)} className="form-input" required />
+                      </div>
+                      <div className="flex-1">
+                        <label className="form-label">Room</label>
+                        <select value={entry.room} onChange={(e) => handleInputChange(day, index, 'room', e.target.value)} className="form-select" required>
+                          <option value="">Room</option>
+                          <option value="101">101</option>
+                          <option value="102">102</option>
+                          <option value="103">103</option>
+                          <option value="104">104</option>
+                        </select>
+                      </div>
+                      {entries[day].length > 0 && (
+                        <button type="button" onClick={() => handleRemoveSlot(day, index)} className="btn btn-ghost btn-sm text-[var(--danger)] hover:bg-[var(--danger-bg)] mb-0.5">
+                          <HiOutlineX className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => handleAddSlot(day)} className="btn btn-ghost btn-sm text-[var(--success)] hover:bg-[var(--success-bg)]">
+                    <HiOutlinePlus className="w-4 h-4" />
+                    Add Slot
                   </button>
-                )}
+                </div>
               </div>
             ))}
-            <button
-              type="button"
-              onClick={() => handleAddSlot(day)}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
-            >
-              Add Slot
-            </button>
-          </div>
-        ))}
-        <div>
-          <button
-            type="submit"
-            disabled={loading} // Disable button while loading
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-          >
-            {loading ? 'Submitting...' : 'Insert Weekly Timetable'}
-          </button>
-          <Link href='/timetable' className="inline-flex ml-6 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Generate Session Classes</Link>
 
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button type="submit" disabled={loading} className="btn btn-primary btn-lg flex-1">
+                {loading ? (<><span className="spinner spinner-sm" /> Submitting...</>) : 'Save Weekly Timetable'}
+              </button>
+              <Link href='/timetable' className="btn btn-outline btn-lg flex-1 text-center">
+                Generate Session Classes
+              </Link>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
 
 export default InsertWeeklyTimetable;
-
-

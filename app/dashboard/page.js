@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { HiOutlineSearch, HiOutlineBookOpen } from 'react-icons/hi';
 
 const Dashboard = () => {
   const [courses, setCourses] = useState([]);
@@ -46,61 +47,83 @@ const Dashboard = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   return (
-    <div className=" bg-gray-100 min-h-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded shadow-md w-full mt-7 max-w-5xl">
-        <h2 className="text-2xl font-bold mb-6 text-center">Courses Dashboard</h2>
-        <div className="mb-4">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            placeholder="Search courses by name or department"
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-          />
+    <div className="page-container">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="page-header animate-slide-up">
+          <h1 className="page-title">Courses Dashboard</h1>
+          <p className="page-subtitle">Manage and browse all courses</p>
         </div>
+
+        {/* Search Bar */}
+        <div className="max-w-xl mx-auto mb-8 animate-fade-in">
+          <div className="relative">
+            <HiOutlineSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-tertiary)]" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search courses by name or department..."
+              className="form-input pl-12 py-3 text-base"
+            />
+          </div>
+        </div>
+
         {courses.length === 0 ? (
-          <p className="text-center">No courses available.</p>
+          <div className="empty-state py-20 animate-fade-in">
+            <HiOutlineBookOpen className="w-12 h-12 mb-3 text-[var(--text-tertiary)]" />
+            <p className="text-lg font-medium text-[var(--text-secondary)]">No courses available</p>
+            <p className="text-sm text-[var(--text-tertiary)] mt-1">Create a new course to get started</p>
+          </div>
         ) : (
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="animate-fade-in">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {courses.map((course) => (
-                <div
+                <Link
+                  href={`/dashboard/${course._id}`}
                   key={course._id}
-                  className="border p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100"
+                  className="glass-card glass-card-hover overflow-hidden group block"
                 >
-                  <img src="/course.jpeg" alt={course.CourseName} className="w-full h-32 object-cover rounded-t-lg" />
-                  <div className="p-4">
-                    <div className="text-sm text-gray-600 mb-1">{course.Department}</div>
-                    <Link href={`/dashboard/${course._id}`} className="font-bold text-lg mb-2">{course.CourseName}</Link>
-                    <div className="text-sm text-gray-700 mb-2">{course.CourseDescription}</div>
-                    
-                    <div className="text-sm text-gray-600">Credits: {course.Credits}</div>
-                    
+                  <div className="h-1.5 bg-accent-gradient" />
+                  <div className="p-5">
+                    <div className="flex items-start justify-between mb-3">
+                      <span className="badge badge-info">{course.Department}</span>
+                      <span className="text-xs text-[var(--text-tertiary)]">{course.Credits} credits</span>
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2 group-hover:text-[var(--accent-light)] transition-colors">
+                      {course.CourseName}
+                    </h3>
+                    <p className="text-sm text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
+                      {course.CourseDescription}
+                    </p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
-            <div className="flex justify-between mt-4">
+
+            {/* Pagination */}
+            <div className="flex items-center justify-center gap-4 mt-8">
               <button
-                className="mx-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                className="btn btn-ghost btn-sm"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
               >
-                Previous
+                ← Previous
               </button>
+              <span className="text-sm text-[var(--text-secondary)]">
+                Page <span className="font-semibold text-[var(--text-primary)]">{currentPage}</span> of {totalPages}
+              </span>
               <button
-                className="mx-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                className="btn btn-ghost btn-sm"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
-                Next
+                Next →
               </button>
             </div>
-            <p className="text-center mt-4">Page {currentPage} of {totalPages}</p>
           </div>
         )}
       </div>

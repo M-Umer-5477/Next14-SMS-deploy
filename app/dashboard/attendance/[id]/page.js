@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { HiOutlineClipboardCheck } from 'react-icons/hi';
 
 const Attendance = ({ params }) => {
     const [students, setStudents] = useState([]);
@@ -12,6 +13,7 @@ const Attendance = ({ params }) => {
     const [attendanceRecords, setAttendanceRecords] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const router = useRouter();
     const { data: session, status } = useSession();
 
@@ -20,7 +22,7 @@ const Attendance = ({ params }) => {
         if (!session || !session.user?.email.includes('@teacher.com')) {
             router.push('/login');
             return;
-          }
+        }
         const fetchCourseAndTimetable = async () => {
             try {
                 const resCourse = await fetch(`/api/createcourse/${params.id}`, { cache: 'no-store' });
@@ -37,7 +39,7 @@ const Attendance = ({ params }) => {
         };
 
         fetchCourseAndTimetable();
-    }, [params.id,session, router, status]);
+    }, [params.id, session, router, status]);
 
     useEffect(() => {
         const initializeAttendanceRecords = () => {
@@ -46,7 +48,7 @@ const Attendance = ({ params }) => {
                 StudentID: student.StudentID,
                 CourseID: course.CourseID,
                 Lecture: selectedLecture,
-                Status: 'Present' // Default status
+                Status: 'Present'
             }));
             setAttendanceRecords(newRecords);
         };
@@ -84,8 +86,6 @@ const Attendance = ({ params }) => {
         }
     };
 
-    
-
     const handleAttendanceChange = (studentId, event) => {
         const newStatus = event.target.value;
         setAttendanceRecords(prevRecords => {
@@ -108,7 +108,7 @@ const Attendance = ({ params }) => {
 
     const handleSaveAttendance = async () => {
         if (!selectedLecture) {
-            alert('Please select a lecture.');
+            setError('Please select a lecture.');
             return;
         }
 
@@ -117,6 +117,8 @@ const Attendance = ({ params }) => {
         console.log("Sending attendance records:", validRecords);
 
         setLoading(true);
+        setSuccess('');
+        setError('');
         try {
             const response = await fetch('/api/attendance', {
                 method: 'POST',
@@ -128,7 +130,7 @@ const Attendance = ({ params }) => {
             setLoading(false);
 
             if (response.ok) {
-                alert('Attendance saved successfully!');
+                setSuccess('Attendance saved successfully!');
                 setAttendanceRecords([]);
                 setSelectedLecture('');
             } else {
@@ -136,66 +138,94 @@ const Attendance = ({ params }) => {
             }
         } catch (error) {
             console.error('Error saving attendance:', error);
-            alert('Failed to save attendance. Please try again.');
+            setError('Failed to save attendance. Please try again.');
+        }
+    };
+
+    const getStatusColor = (statusVal) => {
+        switch(statusVal) {
+            case 'Present': return 'badge-success';
+            case 'Absent': return 'badge-danger';
+            case 'Excused': return 'badge-warning';
+            default: return '';
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
-            <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-                <h1 className="text-2xl font-bold mb-4">Attendance</h1>
-                {error && <div className="text-red-500 mb-4">{error}</div>}
-                <label className="block text-sm font-medium text-gray-700 mb-2">Select Lecture</label>
-                <select
-                    value={selectedLecture}
-                    onChange={(e) => setSelectedLecture(e.target.value)}
-                    className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm mb-4"
-                >
-                    <option value="">Select a lecture</option>
-                    {timetable.map(slot => {
-                        const date = new Date(slot.Date);
-                        return (
-                            <option key={slot._id} value={`${date.toISOString()} ${slot.StartTime} - ${slot.EndTime}`}>
-                                {`${date.toDateString()} ${slot.StartTime} - ${slot.EndTime}`}
-                            </option>
-                        );
-                    })}
-                </select>
-                <table className="min-w-full bg-white border border-gray-300">
-                    <thead>
-                        <tr>
-                            <th className="py-2 px-4 border-b bg-gray-200">Student ID</th>
-                            <th className="py-2 px-4 border-b bg-gray-200">Name</th>
-                            <th className="py-2 px-4 border-b bg-gray-200">Attendance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {students.map(student => (
-                            <tr key={student.StudentID} className="hover:bg-gray-100">
-                                <td className="py-2 px-4 text-center border-b">{student.StudentID}</td>
-                                <td className="py-2 px-4 text-center border-b">{student.FirstName} {student.LastName}</td>
-                                <td className="py-2 px-4 text-center border-b">
-                                    <select 
-                                        className="bg-gray-200 border border-gray-300 p-2 rounded" 
-                                        value={attendanceRecords.find(record => record.StudentID === student.StudentID && record.Lecture === selectedLecture)?.Status || 'Present'} 
-                                        onChange={(e) => handleAttendanceChange(student.StudentID, e)}
-                                    >
-                                        <option value="Present">Present</option>
-                                        <option value="Absent">Absent</option>
-                                        <option value="Excused">Excused</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <button 
-                    onClick={handleSaveAttendance} 
-                    className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
-                    disabled={loading}
-                >
-                   {loading ? 'Saving...' : 'Save Attendance'}
-                </button>
+        <div className="page-container">
+            <div className="container mx-auto px-4 max-w-4xl">
+                <div className="glass-card p-6 sm:p-8 animate-slide-up">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 rounded-xl bg-[var(--success-bg)] flex items-center justify-center text-[var(--success)]">
+                            <HiOutlineClipboardCheck className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <h1 className="text-xl font-bold">Mark Attendance</h1>
+                            <p className="text-sm text-[var(--text-secondary)]">{course.CourseName}</p>
+                        </div>
+                    </div>
+
+                    {error && <div className="alert alert-error mb-4">{error}</div>}
+                    {success && <div className="alert alert-success mb-4">{success}</div>}
+
+                    <div className="mb-6">
+                        <label className="form-label">Select Lecture</label>
+                        <select
+                            value={selectedLecture}
+                            onChange={(e) => setSelectedLecture(e.target.value)}
+                            className="form-select"
+                        >
+                            <option value="">Select a lecture</option>
+                            {timetable.map(slot => {
+                                const date = new Date(slot.Date);
+                                return (
+                                    <option key={slot._id} value={`${date.toISOString()} ${slot.StartTime} - ${slot.EndTime}`}>
+                                        {`${date.toDateString()} ${slot.StartTime} - ${slot.EndTime}`}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-[var(--border-subtle)]">
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Name</th>
+                                    <th className="text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {students.map(student => (
+                                    <tr key={student.StudentID}>
+                                        <td className="font-mono text-sm">{student.StudentID}</td>
+                                        <td>{student.FirstName} {student.LastName}</td>
+                                        <td className="text-center">
+                                            <select
+                                                className="form-select py-1.5 px-3 text-sm w-auto inline-block"
+                                                value={attendanceRecords.find(record => record.StudentID === student.StudentID && record.Lecture === selectedLecture)?.Status || 'Present'}
+                                                onChange={(e) => handleAttendanceChange(student.StudentID, e)}
+                                            >
+                                                <option value="Present">Present</option>
+                                                <option value="Absent">Absent</option>
+                                                <option value="Excused">Excused</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button
+                        onClick={handleSaveAttendance}
+                        className="btn btn-success btn-lg w-full mt-6"
+                        disabled={loading}
+                    >
+                        {loading ? (<><span className="spinner spinner-sm" /> Saving...</>) : 'Save Attendance'}
+                    </button>
+                </div>
             </div>
         </div>
     );

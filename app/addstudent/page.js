@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { HiOutlineUserAdd } from 'react-icons/hi';
 
 const AddStudent = () => {
   const { data: session, status } = useSession();
@@ -28,6 +29,7 @@ const AddStudent = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,6 +46,7 @@ const AddStudent = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
       const { email, password } = generateLoginCredentials();
@@ -56,7 +59,7 @@ const AddStudent = () => {
       });
 
       if (response.ok) {
-        alert('Student added successfully!');
+        setSuccess('Student added successfully!');
         setStudent({
           StudentID: '',
           FirstName: '',
@@ -78,55 +81,65 @@ const AddStudent = () => {
     }
   };
 
+  const fields = [
+    { name: 'StudentID', label: 'Student ID', type: 'text' },
+    { name: 'FirstName', label: 'First Name', type: 'text' },
+    { name: 'LastName', label: 'Last Name', type: 'text' },
+    { name: 'DateOfBirth', label: 'Date of Birth', type: 'date' },
+    { name: 'Gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Other'] },
+    { name: 'ContactInfo', label: 'Contact Info', type: 'text' },
+    { name: 'Address', label: 'Address', type: 'text' },
+    { name: 'PersonalEmail', label: 'Personal Email', type: 'email' },
+  ];
+
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="max-w-screen w-full mx-auto mt-10">
-        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-6 text-center">Add Student</h1>
-          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-            {['StudentID', 'FirstName', 'LastName', 'DateOfBirth', 'Gender', 'ContactInfo', 'Address', 'PersonalEmail'].map((field, index) => (
-              <div key={index} className="mb-4">
-                <label htmlFor={field} className="block text-gray-700 text-sm font-bold mb-2">
-                  {field.split(/(?=[A-Z])/).join(' ')}
-                </label>
-                {field === 'Gender' ? (
-                  <select
-                    name={field}
-                    value={student[field]}
-                    onChange={handleChange}
-                    required
-                    className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                ) : (
-                  <input
-                    type={field === 'DateOfBirth' ? 'date' : field === 'PersonalEmail' ? 'email' : 'text'}
-                    name={field}
-                    placeholder={field.split(/(?=[A-Z])/).join(' ')}
-                    value={student[field]}
-                    onChange={handleChange}
-                    required
-                    className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                )}
-              </div>
-            ))}
-            <div className="col-span-2">
-              <button
-                type="submit"
-                className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                disabled={loading}
-              >
-                {loading ? 'Adding Student...' : 'Add Student'}
-              </button>
-              {error && <p className="text-red-500 text-xs italic mt-2">Error: {error}</p>}
-            </div>
-          </form>
+    <div className="page-container flex items-center justify-center">
+      <div className="glass-card p-8 w-full max-w-2xl animate-slide-up">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-accent-gradient flex items-center justify-center mx-auto mb-4">
+            <HiOutlineUserAdd className="w-7 h-7 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight">Add Student</h1>
+          <p className="text-[var(--text-secondary)] text-sm mt-1">Register a new student in the system</p>
         </div>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {fields.map((field) => (
+            <div key={field.name}>
+              <label htmlFor={field.name} className="form-label">{field.label}</label>
+              {field.type === 'select' ? (
+                <select
+                  name={field.name}
+                  value={student[field.name]}
+                  onChange={handleChange}
+                  required
+                  className="form-select"
+                >
+                  <option value="">Select {field.label}</option>
+                  {field.options.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type={field.type}
+                  name={field.name}
+                  placeholder={field.label}
+                  value={student[field.name]}
+                  onChange={handleChange}
+                  required
+                  className="form-input"
+                />
+              )}
+            </div>
+          ))}
+          <div className="sm:col-span-2 space-y-3 mt-2">
+            <button type="submit" className="btn btn-primary w-full btn-lg" disabled={loading}>
+              {loading ? (<><span className="spinner spinner-sm" /> Adding Student...</>) : 'Add Student'}
+            </button>
+            {error && <div className="alert alert-error">{error}</div>}
+            {success && <div className="alert alert-success">{success}</div>}
+          </div>
+        </form>
       </div>
     </div>
   );

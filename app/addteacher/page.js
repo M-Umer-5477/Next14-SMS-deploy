@@ -1,7 +1,9 @@
 'use client'
-import { useState , useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { HiOutlineAcademicCap } from 'react-icons/hi';
+
 export default function AddTeacher() {
   const [formData, setFormData] = useState({
     TeacherID: '',
@@ -11,7 +13,9 @@ export default function AddTeacher() {
     Department: ''
   });
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false); // Track submission state
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [submitError, setSubmitError] = useState('');
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -28,7 +32,6 @@ export default function AddTeacher() {
       ...formData,
       [name]: value
     });
-    // Clear the error when the user starts typing
     setErrors({
       ...errors,
       [name]: ''
@@ -76,9 +79,10 @@ export default function AddTeacher() {
       return;
     }
 
-    setLoading(true); // Disable the button and show loading state
+    setLoading(true);
+    setSuccess('');
+    setSubmitError('');
 
-    // Generate loginUsername and password
     const email = generateLoginUsername(formData.FirstName, formData.TeacherID);
     const password = generatePassword(formData.FirstName, formData.TeacherID);
 
@@ -97,7 +101,7 @@ export default function AddTeacher() {
 
       const data = await response.json();
       if (response.ok) {
-        alert('Teacher added successfully!');
+        setSuccess('Teacher added successfully!');
         setFormData({
           TeacherID: '',
           FirstName: '',
@@ -107,13 +111,13 @@ export default function AddTeacher() {
         });
         setErrors({});
       } else {
-        alert(`Error: ${data.error}`);
+        setSubmitError(data.error || 'Failed to add teacher.');
       }
     } catch (error) {
       console.error('An unexpected error occurred:', error);
-      alert('An unexpected error occurred. Please try again later.');
+      setSubmitError('An unexpected error occurred. Please try again later.');
     } finally {
-      setLoading(false); // Re-enable the button
+      setLoading(false);
     }
   };
 
@@ -125,89 +129,53 @@ export default function AddTeacher() {
     return `${firstName.toLowerCase()}${teacherID}`;
   };
 
+  const fields = [
+    { name: 'TeacherID', label: 'Teacher ID', type: 'text' },
+    { name: 'FirstName', label: 'First Name', type: 'text' },
+    { name: 'LastName', label: 'Last Name', type: 'text' },
+    { name: 'PersonalEmail', label: 'Personal Email', type: 'email' },
+    { name: 'Department', label: 'Department', type: 'text' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="container mx-auto max-w-4xl bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">Add Teacher</h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="TeacherID" className="block text-sm font-medium text-gray-700">Teacher ID:</label>
-              <input
-                type="text"
-                name="TeacherID"
-                id="TeacherID"
-                value={formData.TeacherID}
-                onChange={handleChange}
-                required
-                className={`mt-1 block w-full px-3 py-2 border ${errors.TeacherID ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm`}
-              />
-              {errors.TeacherID && <p className="mt-1 text-sm text-red-600">{errors.TeacherID}</p>}
-            </div>
-            <div>
-              <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">First Name:</label>
-              <input
-                type="text"
-                name="FirstName"
-                id="FirstName"
-                value={formData.FirstName}
-                onChange={handleChange}
-                required
-                className={`mt-1 block w-full px-3 py-2 border ${errors.FirstName ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm`}
-              />
-              {errors.FirstName && <p className="mt-1 text-sm text-red-600">{errors.FirstName}</p>}
-            </div>
-            <div>
-              <label htmlFor="LastName" className="block text-sm font-medium text-gray-700">Last Name:</label>
-              <input
-                type="text"
-                name="LastName"
-                id="LastName"
-                value={formData.LastName}
-                onChange={handleChange}
-                required
-                className={`mt-1 block w-full px-3 py-2 border ${errors.LastName ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm`}
-              />
-              {errors.LastName && <p className="mt-1 text-sm text-red-600">{errors.LastName}</p>}
-            </div>
-            <div>
-              <label htmlFor="PersonalEmail" className="block text-sm font-medium text-gray-700">Personal Email:</label>
-              <input
-                type="email"
-                name="PersonalEmail"
-                id="PersonalEmail"
-                value={formData.PersonalEmail}
-                onChange={handleChange}
-                required
-                className={`mt-1 block w-full px-3 py-2 border ${errors.PersonalEmail ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm`}
-              />
-              {errors.PersonalEmail && <p className="mt-1 text-sm text-red-600">{errors.PersonalEmail}</p>}
-            </div>
-            <div>
-              <label htmlFor="Department" className="block text-sm font-medium text-gray-700">Department:</label>
-              <input
-                type="text"
-                name="Department"
-                id="Department"
-                value={formData.Department}
-                onChange={handleChange}
-                required
-                className={`mt-1 block w-full px-3 py-2 border ${errors.Department ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm`}
-              />
-              {errors.Department && <p className="mt-1 text-sm text-red-600">{errors.Department}</p>}
-            </div>
+    <div className="page-container flex items-center justify-center">
+      <div className="glass-card p-8 w-full max-w-2xl animate-slide-up">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-accent-gradient flex items-center justify-center mx-auto mb-4">
+            <HiOutlineAcademicCap className="w-7 h-7 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight">Add Teacher</h1>
+          <p className="text-[var(--text-secondary)] text-sm mt-1">Register a new teacher in the system</p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {fields.map((field) => (
+              <div key={field.name}>
+                <label htmlFor={field.name} className="form-label">{field.label}</label>
+                <input
+                  type={field.type}
+                  name={field.name}
+                  id={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  required
+                  className={`form-input ${errors[field.name] ? 'error' : ''}`}
+                />
+                {errors[field.name] && <p className="form-error">{errors[field.name]}</p>}
+              </div>
+            ))}
           </div>
           <button
             type="submit"
-            disabled={loading} // Disable button when loading
-            className={`w-full py-2 px-4 font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+            disabled={loading}
+            className="btn btn-primary w-full btn-lg mt-2"
           >
-            {loading ? 'Adding Teacher...' : 'Add Teacher'}
+            {loading ? (<><span className="spinner spinner-sm" /> Adding Teacher...</>) : 'Add Teacher'}
           </button>
+          {submitError && <div className="alert alert-error">{submitError}</div>}
+          {success && <div className="alert alert-success">{success}</div>}
         </form>
       </div>
     </div>
   );
 }
-
-

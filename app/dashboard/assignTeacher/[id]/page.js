@@ -3,10 +3,11 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { HiOutlineAcademicCap } from 'react-icons/hi';
 
 const AssignTeacher = ({ params }) => {
     const router = useRouter();
-    const { data: session , status} = useSession();
+    const { data: session, status } = useSession();
 
     const [teachers, setTeachers] = useState([]);
     const [course, setCourse] = useState(null);
@@ -19,7 +20,6 @@ const AssignTeacher = ({ params }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // Redirect if user is not authorized
     useEffect(() => {
         if (status === 'loading') return;
         if (!session || session.user?.email.includes('@teacher.com') || session.user?.email.includes('@student.com')) {
@@ -27,7 +27,6 @@ const AssignTeacher = ({ params }) => {
         }
     }, [session, status, router]);
 
-    // Fetch course and teachers data
     useEffect(() => {
         const fetchCourseAndTeachers = async () => {
             try {
@@ -85,45 +84,28 @@ const AssignTeacher = ({ params }) => {
     }, [assignment, router]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl w-full space-y-8">
-                <div>
-                    <h1 className="text-center text-3xl font-extrabold text-gray-900">
-                        Assign Course to Teacher
-                    </h1>
+        <div className="page-container flex items-center justify-center">
+            <div className="glass-card p-8 w-full max-w-2xl animate-slide-up">
+                <div className="text-center mb-8">
+                    <div className="w-14 h-14 rounded-2xl bg-accent-gradient flex items-center justify-center mx-auto mb-4">
+                        <HiOutlineAcademicCap className="w-7 h-7 text-white" />
+                    </div>
+                    <h1 className="text-2xl font-bold tracking-tight">Assign Teacher</h1>
+                    {course && (
+                        <p className="text-[var(--text-secondary)] text-sm mt-1">
+                            {course.CourseName} <span className="text-[var(--text-tertiary)]">(ID: {course.CourseID})</span>
+                        </p>
+                    )}
                 </div>
-                {course && (
-                    <p className="text-center text-lg text-gray-600 mb-6">
-                        Course: {course.CourseName} (ID: {course.CourseID})
-                    </p>
-                )}
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="rounded-md shadow-sm -space-y-px grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div>
-                            <label htmlFor="AssignmentID" className="block text-gray-700 text-sm font-bold mb-2">
-                                Assignment ID
-                            </label>
-                            <input
-                                type="text"
-                                name="AssignmentID"
-                                placeholder="Assignment ID"
-                                value={assignment.AssignmentID}
-                                onChange={handleChange}
-                                required
-                                className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            />
+                            <label htmlFor="AssignmentID" className="form-label">Assignment ID</label>
+                            <input type="text" name="AssignmentID" placeholder="Assignment ID" value={assignment.AssignmentID} onChange={handleChange} required className="form-input" />
                         </div>
                         <div>
-                            <label htmlFor="TeacherID" className="block text-gray-700 text-sm font-bold mb-2">
-                                Teacher ID
-                            </label>
-                            <select
-                                name="TeacherID"
-                                value={assignment.TeacherID}
-                                onChange={handleChange}
-                                required
-                                className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            >
+                            <label htmlFor="TeacherID" className="form-label">Teacher</label>
+                            <select name="TeacherID" value={assignment.TeacherID} onChange={handleChange} required className="form-select">
                                 <option value="">Select Teacher</option>
                                 {teachers.map((teacher) => (
                                     <option key={teacher.TeacherID} value={teacher.TeacherID}>
@@ -133,30 +115,14 @@ const AssignTeacher = ({ params }) => {
                             </select>
                         </div>
                         <div>
-                            <label htmlFor="AssignmentDate" className="block text-gray-700 text-sm font-bold mb-2">
-                                Assignment Date
-                            </label>
-                            <input
-                                type="date"
-                                name="AssignmentDate"
-                                placeholder="Assignment Date"
-                                value={assignment.AssignmentDate}
-                                onChange={handleChange}
-                                required
-                                className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            />
+                            <label htmlFor="AssignmentDate" className="form-label">Assignment Date</label>
+                            <input type="date" name="AssignmentDate" value={assignment.AssignmentDate} onChange={handleChange} required className="form-input" />
                         </div>
                     </div>
-                    <div className="mt-6">
-                        <button
-                            type="submit"
-                            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-                            disabled={loading}
-                        >
-                            {loading ? 'Assigning Course...' : 'Assign Course'}
-                        </button>
-                        {error && <p className="text-red-500 text-xs italic mt-2">{error}</p>}
-                    </div>
+                    <button type="submit" className="btn btn-primary w-full btn-lg mt-2" disabled={loading}>
+                        {loading ? (<><span className="spinner spinner-sm" /> Assigning...</>) : 'Assign Teacher'}
+                    </button>
+                    {error && <div className="alert alert-error">{error}</div>}
                 </form>
             </div>
         </div>

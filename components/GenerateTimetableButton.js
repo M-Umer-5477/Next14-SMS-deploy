@@ -1,6 +1,8 @@
 // components/GenerateTimetableButton.js
 'use client'
 import { useState } from "react";
+import { HiOutlineCalendar } from 'react-icons/hi';
+
 const GenerateTimetableButton = () => {
     const [loading, setLoading] = useState(false);
   
@@ -25,13 +27,22 @@ const GenerateTimetableButton = () => {
     return (
       <button
         onClick={handleClick}
-        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+        className="btn btn-primary"
         disabled={loading}
       >
-        {loading ? 'Generating...' : 'Generate Timetable'}
+        {loading ? (
+          <>
+            <span className="spinner spinner-sm" />
+            Generating...
+          </>
+        ) : (
+          <>
+            <HiOutlineCalendar className="w-4 h-4" />
+            Generate Timetable
+          </>
+        )}
       </button>
     );
   };
   
   export default GenerateTimetableButton;
-  

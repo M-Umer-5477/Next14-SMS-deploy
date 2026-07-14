@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
 
 const ChangeTeacherAssignment = ({ params }) => {
   const router = useRouter();
@@ -70,7 +71,7 @@ const ChangeTeacherAssignment = ({ params }) => {
       const result = await res.json();
       if (res.ok) {
         alert('Course assigned successfully');
-        router.push('/dashboard'); // Redirect to success page or dashboard
+        router.push('/dashboard');
       } else {
         setError(result.error);
       }
@@ -82,36 +83,27 @@ const ChangeTeacherAssignment = ({ params }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Change Teacher Assignment</h2>
-        {course && (
-          <p className="text-center text-lg text-gray-600 mb-6">
-            Course: {course.CourseName} (ID: {course.CourseID})
-          </p>
-        )}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="AssignmentID" className="block text-gray-700 font-bold mb-2">Assignment ID</label>
-            <input
-              type="text"
-              id="AssignmentID"
-              name="AssignmentID"
-              value={assignment ? assignment.AssignmentID : ''}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2"
-              readOnly
-            />
+    <div className="page-container flex items-center justify-center">
+      <div className="glass-card p-8 w-full max-w-lg animate-slide-up">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-accent-gradient flex items-center justify-center mx-auto mb-4">
+            <HiOutlineSwitchHorizontal className="w-7 h-7 text-white" />
           </div>
-          <div className="mb-4">
-            <label htmlFor="TeacherID" className="block text-gray-700 font-bold mb-2">Teacher ID</label>
-            <select
-              id="TeacherID"
-              name="TeacherID"
-              value={assignment ? assignment.TeacherID : ''}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2"
-            >
+          <h1 className="text-2xl font-bold tracking-tight">Change Teacher</h1>
+          {course && (
+            <p className="text-[var(--text-secondary)] text-sm mt-1">
+              {course.CourseName} <span className="text-[var(--text-tertiary)]">(ID: {course.CourseID})</span>
+            </p>
+          )}
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="AssignmentID" className="form-label">Assignment ID</label>
+            <input type="text" id="AssignmentID" name="AssignmentID" value={assignment ? assignment.AssignmentID : ''} onChange={handleChange} className="form-input opacity-60" readOnly />
+          </div>
+          <div>
+            <label htmlFor="TeacherID" className="form-label">New Teacher</label>
+            <select id="TeacherID" name="TeacherID" value={assignment ? assignment.TeacherID : ''} onChange={handleChange} className="form-select">
               <option value="">Select Teacher</option>
               {teachers.map((teacher) => (
                 <option key={teacher.TeacherID} value={teacher.TeacherID}>
@@ -120,25 +112,14 @@ const ChangeTeacherAssignment = ({ params }) => {
               ))}
             </select>
           </div>
-          <div className="mb-4">
-            <label htmlFor="AssignmentDate" className="block text-gray-700 font-bold mb-2">Assignment Date</label>
-            <input
-              type="date"
-              id="AssignmentDate"
-              name="AssignmentDate"
-              value={assignment ? assignment.AssignmentDate : ""}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2"
-            />
+          <div>
+            <label htmlFor="AssignmentDate" className="form-label">Assignment Date</label>
+            <input type="date" id="AssignmentDate" name="AssignmentDate" value={assignment ? assignment.AssignmentDate : ""} onChange={handleChange} className="form-input" />
           </div>
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-            disabled={loading}
-          >
-            {loading ? 'Updating Assignment...' : 'Update Assignment'}
+          <button type="submit" className="btn btn-primary w-full btn-lg mt-2" disabled={loading}>
+            {loading ? (<><span className="spinner spinner-sm" /> Updating...</>) : 'Update Assignment'}
           </button>
-          {error && <p className="text-red-500 text-xs italic mt-2">{error}</p>}
+          {error && <div className="alert alert-error">{error}</div>}
         </form>
       </div>
     </div>
@@ -146,5 +127,3 @@ const ChangeTeacherAssignment = ({ params }) => {
 };
 
 export default ChangeTeacherAssignment;
-
-

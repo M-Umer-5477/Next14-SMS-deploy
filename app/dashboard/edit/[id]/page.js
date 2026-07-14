@@ -2,10 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { HiOutlinePencil } from 'react-icons/hi';
 
 const EditCourse = ({ params }) => {
   const router = useRouter();
-  const { data: session , status} = useSession();
+  const { data: session, status } = useSession();
   
   const [formData, setFormData] = useState({
     CourseName: '',
@@ -81,60 +82,37 @@ const EditCourse = ({ params }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Edit Course</h2>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="CourseName" className="block text-gray-700 font-bold mb-2">Course Name</label>
-            <input
-              type="text"
-              id="CourseName"
-              name="CourseName"
-              value={formData.CourseName}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2"
-            />
+    <div className="page-container flex items-center justify-center">
+      <div className="glass-card p-8 w-full max-w-lg animate-slide-up">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-accent-gradient flex items-center justify-center mx-auto mb-4">
+            <HiOutlinePencil className="w-7 h-7 text-white" />
           </div>
-          <div className="mb-4">
-            <label htmlFor="CourseDescription" className="block text-gray-700 font-bold mb-2">Course Description</label>
-            <textarea
-              id="CourseDescription"
-              name="CourseDescription"
-              value={formData.CourseDescription}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2"
-            />
+          <h1 className="text-2xl font-bold tracking-tight">Edit Course</h1>
+          <p className="text-[var(--text-secondary)] text-sm mt-1">Update course information</p>
+        </div>
+        {error && <div className="alert alert-error mb-4">{error}</div>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="CourseName" className="form-label">Course Name</label>
+            <input type="text" id="CourseName" name="CourseName" value={formData.CourseName} onChange={handleChange} className="form-input" />
           </div>
-          <div className="mb-4">
-            <label htmlFor="Credits" className="block text-gray-700 font-bold mb-2">Credits</label>
-            <input
-              type="text"
-              id="Credits"
-              name="Credits"
-              value={formData.Credits}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2"
-            />
+          <div>
+            <label htmlFor="CourseDescription" className="form-label">Course Description</label>
+            <textarea id="CourseDescription" name="CourseDescription" value={formData.CourseDescription} onChange={handleChange} className="form-textarea" rows={3} />
           </div>
-          <div className="mb-4">
-            <label htmlFor="Department" className="block text-gray-700 font-bold mb-2">Department</label>
-            <input
-              type="text"
-              id="Department"
-              name="Department"
-              value={formData.Department}
-              onChange={handleChange}
-              className="w-full border rounded-md px-3 py-2"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="Credits" className="form-label">Credits</label>
+              <input type="text" id="Credits" name="Credits" value={formData.Credits} onChange={handleChange} className="form-input" />
+            </div>
+            <div>
+              <label htmlFor="Department" className="form-label">Department</label>
+              <input type="text" id="Department" name="Department" value={formData.Department} onChange={handleChange} className="form-input" />
+            </div>
           </div>
-          <button
-            type="submit"
-            className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={loading}
-          >
-            {loading ? 'Updating...' : 'Update Course'}
+          <button type="submit" className="btn btn-primary w-full btn-lg mt-2" disabled={loading}>
+            {loading ? (<><span className="spinner spinner-sm" /> Updating...</>) : 'Update Course'}
           </button>
         </form>
       </div>
@@ -143,4 +121,3 @@ const EditCourse = ({ params }) => {
 };
 
 export default EditCourse;
-
