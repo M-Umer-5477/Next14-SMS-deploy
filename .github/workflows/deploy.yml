@@ -17,13 +17,34 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          script_stop: true
+          timeout: 60s
+          command_timeout: 20m
+
           script: |
             set -e
+
+            echo "===== Deployment Started ====="
+            date
+
             cd ~/apps/Next14-SMS-deploy
+
+            echo "Pulling latest code..."
             git pull origin main
-            npm ci
+
+            echo "Installing dependencies..."
+            npm install
+
+            echo "Building Next.js application..."
             npm run build
+
+            echo "Reloading PM2..."
             pm2 reload sms
+
+            echo "Saving PM2 process list..."
             pm2 save
-            curl -fI http://localhost:3000
+
+            echo "Checking application..."
+            curl -I http://localhost:3000
+
+            echo "===== Deployment Finished Successfully ====="
+            date
