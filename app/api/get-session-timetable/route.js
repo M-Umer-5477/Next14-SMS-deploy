@@ -2,6 +2,8 @@
 import db from '@/lib/db';
 import SessionTimetable from '@/models/sessiontimetablemodel';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
   await db.connect();
 

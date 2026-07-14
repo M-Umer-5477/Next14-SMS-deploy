@@ -1,6 +1,8 @@
 import db from '@/lib/db';
 import User from '@/models/usermodel';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
     await db.connect();
     try {

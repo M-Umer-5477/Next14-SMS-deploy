@@ -27,6 +27,7 @@ jobs:
             date
 
             cd ~/apps/Next14-SMS-deploy
+            APP_PORT="${PORT:-3000}"
 
             echo "Pulling latest code..."
             git pull origin main
@@ -37,14 +38,57 @@ jobs:
             echo "Building Next.js application..."
             npm run build
 
-            echo "Reloading PM2..."
-            pm2 reload sms
+            echo "Starting or restarting PM2 app..."
+            if pm2 describe sms >/dev/null 2>&1; then
+              PORT="$APP_PORT" NODE_ENV=production pm2 restart sms --update-env
+            else
+              PORT="$APP_PORT" NODE_ENV=production pm2 start npm --name sms -- start -- -p "$APP_PORT"
+            fi
+
+            echo "Verifying PM2 process health..."
+            attempts=0
+            until [ "$attempts" -ge 10 ]; do
+              if pm2 jlist | node -e "const fs=require('fs');const apps=JSON.parse(fs.readFileSync(0,'utf8'));const app=apps.find((a)=>a.name==='sms');if(app && app.pm2_env && app.pm2_env.status==='online'){process.exit(0)}process.exit(1)"; then
+                echo "PM2 process sms is online."
+                break
+              fi
+              attempts=$((attempts + 1))
+              echo "Waiting for PM2 process to become online... ($attempts/10)"
+              sleep 3
+            done
+
+            if [ "$attempts" -ge 10 ]; then
+              echo "PM2 process sms did not become online in time."
+              pm2 status
+              pm2 logs sms --lines 100 --nostream || true
+              exit 1
+            fi
+
+            echo "PM2 diagnostics..."
+            pm2 status
+            pm2 logs sms --lines 100 --nostream || true
 
             echo "Saving PM2 process list..."
             pm2 save
 
-            echo "Checking application..."
-            curl -I http://localhost:3000
+            echo "Checking application with retries..."
+            health_attempts=0
+            until [ "$health_attempts" -ge 10 ]; do
+              if curl -fsS -o /dev/null "http://localhost:$APP_PORT"; then
+                echo "Application is healthy on port $APP_PORT."
+                break
+              fi
+              health_attempts=$((health_attempts + 1))
+              echo "Health check failed, retrying... ($health_attempts/10)"
+              sleep 3
+            done
+
+            if [ "$health_attempts" -ge 10 ]; then
+              echo "Application health check failed after retries."
+              pm2 status
+              pm2 logs sms --lines 100 --nostream || true
+              exit 1
+            fi
 
             echo "===== Deployment Finished Successfully ====="
             date
